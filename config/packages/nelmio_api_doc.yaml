@@ -41,4 +41,45 @@ nelmio_api_doc:
                                                 example: eyJhbGciOiJIUzI1NiIsIn...
                         '401':
                             description: Invalid email or password
+            /auth/refresh:
+                post:
+                    tags:
+                        - Authentication
+                    summary: Refresh expired JWT access token
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        refresh_token:
+                                            type: string
+                                            example: "7a3b8c9d..."
+                    responses:
+                        '200':
+                            description: New JWT and Refresh Token pair generated successfully
+                        '401':
+                            description: Invalid or expired refresh token
+
+            /auth/logout:
+                post:
+                    tags:
+                        - Authentication
+                    summary: Securely log out and revoke refresh token from MongoDB
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        refresh_token:
+                                            type: string
+                                            example: "7a3b8c9d..."
+                    responses:
+                        '204':
+                            description: Successfully logged out, token deleted from MongoDB
+                        '401':
+                            description: Missing or invalid token
 
