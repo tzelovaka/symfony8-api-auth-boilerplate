@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+    app:
+        build:
+            context: .
+        ports:
+            - "8080:80"
+            - "8443:443"
+            - "8443:443/udp"
+        volumes:
+            - .:/app
+        environment:
+            APP_ENV: ${APP_ENV}
+            APP_SECRET: ${APP_SECRET}
+            # FRANKENPHP_CONFIG: "worker ./public/index.php"
+            FRANKENPHP_CONFIG: "" #for immediate code updates
+            APP_RUNTIME: "Symfony\\Component\\Runtime\\SymfonyRuntime"
+            DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?serverVersion=16&charset=utf8"
+            MONGODB_URL: "mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017"
+#            For future features...
+#            VALKEY_URL: "redis://valkey:6379"
+#            MESSENGER_TRANSPORT_DSN: "amqp://${RABBIT_USER}:${RABBIT_PASSWORD}@rabbitmq:5672/%2f/messages"
+        depends_on:
+            - postgres
+            - mongo
+#            For future features...
+#            - valkey
+#            - rabbitmq
+
+    postgres:
+        image: postgres:16-alpine
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        ports:
+            - "5432:5432"
+        volumes:
+            - pg_data:/var/lib/postgresql/data
+
+    mongo:
+        image: mongo:7.0
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+            MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+        ports:
+            - "27017:27017"
+        volumes:
+            - mongo_data:/data/db
+#    For future features
+#    valkey:
+#        image: valkey/valkey:8-alpine
+#        ports:
+#            - "6379:6379"
+#        volumes:
+#            - valkey_data:/data
+
+#    rabbitmq:
+#        image: rabbitmq:3-management-alpine
+#        environment:
+#            RABBITMQ_DEFAULT_USER: ${RABBIT_USER}
+#            RABBITMQ_DEFAULT_PASS: ${RABBIT_PASSWORD}
+#        ports:
+#            - "5672:5672"
+#            - "15672:15672"
+#        volumes:
+#            - rabbit_data:/var/lib/rabbitmq
+
+volumes:
+    pg_data:
+    mongo_data:
+#    For future features...
+#    valkey_data:
+#    rabbit_data:

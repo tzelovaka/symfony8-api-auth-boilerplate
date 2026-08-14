@@ -1,0 +1,44 @@
+when@dev:
+nelmio_api_doc:
+    areas:
+        path_patterns:
+            - ^/auth
+            - ^/api(?!/doc$)
+    documentation:
+        info:
+            title: 'API Documentation'
+            version: '1.0.0'
+
+        paths:
+            /auth/login:
+                post:
+                    tags:
+                        - Authentication
+                    summary: User authentication (Get JWT token)
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        email:
+                                            type: string
+                                            example: user@example.com
+                                        password:
+                                            type: string
+                                            example: secret123
+                    responses:
+                        '200':
+                            description: Successful authentication
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            token:
+                                                type: string
+                                                example: eyJhbGciOiJIUzI1NiIsIn...
+                        '401':
+                            description: Invalid email or password
+

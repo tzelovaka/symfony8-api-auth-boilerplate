@@ -1,0 +1,8 @@
+gesdinet_jwt_refresh_token:
+    object_manager: doctrine_mongodb.odm.document_manager
+
+    refresh_token_class: App\Document\RefreshToken
+
+    ttl: 2592000
+
+    single_use: true
